@@ -1,0 +1,193 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <style>
+        body {
+            transition: opacity ease-in 0.2s;
+        }
+
+            body[unresolved] {
+                opacity: 0;
+                display: block;
+                overflow: hidden;
+                position: relative;
+            }
+
+        .note {
+            width: 30px;
+            max-width: 30px;
+            height: 30px;
+            max-height: 30px;
+            border-style: solid;
+        }
+    </style>
+    <meta charset="utf-8">
+    <title>Random music</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="icon" type="image/png" sizes="174x174" href="https://tonejs.github.io/examples/favicon.png">
+
+    <script src="Oscillator_files/webcomponents-bundle.js"></script>
+    <script src="Oscillator_files/Tone.js"></script>
+    <script src="Oscillator_files/tonejs-ui.js"></script>
+    <script src="vue.js"></script>
+    <style type="text/css">
+        tone-play-toggle {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+
+    <style>
+    </style>
+
+
+    <div id="notesDiv">
+        <div>
+            <button v-on:click="generateMelody">generate melody</button><br>
+            <table>
+
+                <tr v-for="singleMelody in allMelodies">
+                    <td v-for="position in singleMelody" class="note {{position.className}}">
+                        {{position.note}}
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+        <button onclick="start()">start</button><br>
+        <button onclick="stop()">stop</button><br>
+        <button v-on:click="clear">clear</button><br>
+    </div>
+
+
+    <script type="text/javascript">
+
+        var app = new Vue({
+            el: '#notesDiv',
+            data: {
+                cells: [],
+                allMelodies: [],
+                allSequences: [],
+                synth: new Tone.PolySynth(6, Tone.Synth).toMaster(),
+                cMinor: ["C3", "D3", "Eb3", "F3", "G3", "Ab3", "B3", "C4"],
+                noteChances: [1.0, 0.5, 0.7, 0.6, 0.9, 0.6, 0.3, 0.9],
+                restChances: [0.1, 0.4, 0.3, 0.2, 0.3, 0.4, 0.3, 0.4, 0.2, 0.4, 0.3, 0.2, 0.3, 0.4, 0.3, 0.4]
+            },
+            methods: {
+                generateMelody: function () {
+                    this.synth.connect(new Tone.Reverb(1))
+                    var total = this.noteChances.reduce(this.sum);
+                    var melody = new Array();
+                    for (note = 0; note < this.restChances.length; note++) {
+                        var rand = Math.random() * total;
+                        var index = 0;
+                        var totalChance = 0;
+                        while (index < this.noteChances.length) {
+                            totalChance += this.noteChances[index];
+                            if (totalChance >= rand) {
+                                melody.push(this.cMinor[index]);
+                                break;
+                            }
+                            index++;
+                        }
+                    }
+                    this.addRests(melody);
+                    this.removeDuplicates(melody);
+                    const synthPart = new Tone.Sequence(
+                        function (time, note) {
+                            app.synth.triggerAttackRelease(note, "10hz", time);
+                        },
+                        melody,
+                        "4n"
+                    )
+                    this.allMelodies.push(
+                        melody.map(m =>({
+                            note: m,
+                                className: ""
+                        })
+                        ));
+                    this.allSequences.push(synthPart);
+                    //document.getElementById('notesDiv').innerHTML += melody.reduce(arrayToString)+"<br>";
+                    synthPart.start();
+
+                },
+                removeDuplicates: function (melody) {
+                    for (i = 0; i < melody.length; i++) {
+                        for (m = 0; m < this.allMelodies.length; m++) {
+                            if (melody[i] == this.allMelodies[m][i].note) {
+                                melody[i] = null;
+                                break;
+                            }
+                        }
+                    }
+                    //TODO: check other melodies and remove duplicate notes
+                },
+                addRests: function (melody) {
+
+                    var index = 0;
+                    while (index < this.noteChances.length) {
+                        var rand = Math.random();
+                        if (this.restChances[index] >= rand) {
+                            melody[index] = null;
+                        }
+                        index++;
+                    }
+                },
+                arrayToString: function (total, value, index, array) {
+                    var valueToWrite = value;
+                    if (valueToWrite == null) {
+                        valueToWrite = "_ ";
+                    }
+                    return total + "," + valueToWrite;
+                },
+                sum: function (total, value, index, array) {
+                    return total + value;
+                },
+                clear: function () {
+                    for (i = 0; i < this.allSequences.length; i++) {
+                        var sequence = this.allSequences.pop();
+                        sequence.stop();
+                        sequence.removeAll();
+                        sequence.dispose();
+                    }
+                    this.allMelodies = [];
+                    this.classes = [];
+                    Tone.Transport.clear();
+                    Tone.Transport.cancel();
+                }
+            }
+        });
+
+        function start() {
+            Tone.Transport.start();
+        }
+
+        function stop() {
+            Tone.Transport.stop();
+        }
+
+        function tick() {
+            var position = Tone.Transport.position;
+            var positions = position.split(":");
+            positionInSixteenths = (parseInt(positions[0]) - 1) * 16 + (positions[1] * 4 - 1) + positions[2] - 1;
+            var positioninquarters = Math.floor(positionInSixteenths / 4);
+            var previousPosition = positioninquarters - 1;
+            if (previousPosition < 0) {
+                previousPosition = allMelodies[0].length - 1;
+            }
+            for (m = 0; m < allMelodies.length; m++) {
+                allMelodies[m][positioninquarters].className = "active";
+                allMelodies[m][previousPosition].className = "";
+            }
+
+        }
+
+    </script>
+
+
+</body>
+</html>
