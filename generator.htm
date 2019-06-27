@@ -51,7 +51,8 @@
             <table>
 
                 <tr v-for="singleMelody in allMelodies">
-                    <td v-for="position in singleMelody" class="note {{position.className}}">
+                    <!-- TODO: use this type of code instead: <td :class="{ 'highlight': note.isActive }"></td>-->
+                    <td v-for="position in singleMelody" :class="position.className" class="note">
                         {{position.note}}
                     </td>
                 </tr>
@@ -62,9 +63,25 @@
         <button onclick="stop()">stop</button><br>
         <button v-on:click="clear">clear</button><br>
     </div>
-
-
+   
     <script type="text/javascript">
+        
+        function tick(time) {
+            var position = Tone.Transport.position;
+            var positions = position.split(":");
+            positionInSixteenths = (parseInt(positions[0]) - 1) * 16 + (positions[1] * 4 - 1) + positions[2] - 1;
+            var positioninquarters = Math.floor(positionInSixteenths / 4);
+            var previousPosition = positioninquarters - 1;
+            if (previousPosition < 0) {
+                previousPosition = app.allMelodies[0].length - 1;
+            }
+            for (m = 0; m < app.allMelodies.length; m++) {
+                allMelodies[m][positioninquarters].className = "active";
+                allMelodies[m][previousPosition].className = "";
+            }
+
+        }
+        Tone.Transport.scheduleRepeat(tick, "8n");
 
         var app = new Vue({
             el: '#notesDiv',
@@ -105,9 +122,9 @@
                         "4n"
                     )
                     this.allMelodies.push(
-                        melody.map(m =>({
+                        melody.map(m => ({
                             note: m,
-                                className: ""
+                            className: ""
                         })
                         ));
                     this.allSequences.push(synthPart);
@@ -170,21 +187,7 @@
             Tone.Transport.stop();
         }
 
-        function tick() {
-            var position = Tone.Transport.position;
-            var positions = position.split(":");
-            positionInSixteenths = (parseInt(positions[0]) - 1) * 16 + (positions[1] * 4 - 1) + positions[2] - 1;
-            var positioninquarters = Math.floor(positionInSixteenths / 4);
-            var previousPosition = positioninquarters - 1;
-            if (previousPosition < 0) {
-                previousPosition = allMelodies[0].length - 1;
-            }
-            for (m = 0; m < allMelodies.length; m++) {
-                allMelodies[m][positioninquarters].className = "active";
-                allMelodies[m][previousPosition].className = "";
-            }
 
-        }
 
     </script>
 
