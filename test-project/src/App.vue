@@ -19,12 +19,7 @@ export default {
   name: 'app',
   data: () => {
     return {
-      notes: [
-        { note: 'B1' },
-        { note: 'B2' },
-        { note: 'B3' },
-        { note: 'B4' },
-      ]
+      
     }
   },
   components: {
