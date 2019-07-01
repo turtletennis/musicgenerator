@@ -1,30 +1,17 @@
 <template>
-  
   <div id="app">
-    <span>test!</span>
-    <p>note collection:</p>
-    <NoteCollection></NoteCollection>
-    <HelloWorld></HelloWorld>
-
+    <img alt="Vue logo" src="./assets/logo.png">
+    <HelloWorld msg="Welcome to Your Vue.js App"/>
   </div>
 </template>
 
 <script>
 import HelloWorld from './components/HelloWorld.vue'
-import SingleNote from './components/SingleNote'
-import tone from 'tone'
-
 
 export default {
   name: 'app',
-  data: () => {
-    return {
-      
-    }
-  },
   components: {
-      SingleNote,
-      NoteCollection
+    HelloWorld
   }
 }
 </script>

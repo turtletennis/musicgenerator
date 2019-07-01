@@ -1,7 +1,7 @@
 <template>
-
+notes
     <div v-for="note in notes" :key="note">
-
+note
         <SingleNote :note="note"></SingleNote>
     </div>
 
