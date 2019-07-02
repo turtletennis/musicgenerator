@@ -1,7 +1,8 @@
 <template>
     <div id="app">
+        <button v-on:click="generateMelody">generate melody</button>
         <table>
-            <tr v-for="melody in melodies" :key="melody">
+            <tr v-for="(melody,index) in melodies" :key="`melody-${index}`">
                 <NoteCollection :notes="melody.notes" ></NoteCollection>
             </tr>
         </table>
@@ -17,29 +18,12 @@
         name: 'app',
         data: () => {
             return {
-                melodies: [
-                    {
-                        notes: [
-                            { note: 'B1', isActive: true },
-                            { note: 'B2' },
-                            { note: 'B3' },
-                            { note: 'B4' },
-                        ]
-                    },
-                    {
-                        notes: [
-                            { note: 'C1' },
-                            { note: 'D2' },
-                            { note: 'E3' },
-                            { note: 'F4' },
-                        ]
-                    }
-                ],
+                melodies: [],
                 synth: new Tone.PolySynth(6, Tone.Synth).toMaster(),
                 cMinor: ["C3", "D3", "Eb3", "F3", "G3", "Ab3", "B3", "C4"],
                 noteChances: [1.0, 0.5, 0.7, 0.6, 0.9, 0.6, 0.3, 0.9],
                 restChances: [0.1, 0.4, 0.3, 0.2, 0.3, 0.4, 0.3, 0.4, 0.2, 0.4, 0.3, 0.2, 0.3, 0.4, 0.3, 0.4],
-                allSequences: []
+                Sequences: []
             }
         },
         components: {
@@ -50,7 +34,7 @@
                 this.synth.connect(new Tone.Reverb(1))
                 var total = this.noteChances.reduce(this.sum);
                 var melody = new Array();
-                for (let note = 0; note < this.restChances.length; note++) {
+                for (let noteIndex = 0; noteIndex < this.restChances.length; noteIndex++) {
                     var rand = Math.random() * total;
                     var index = 0;
                     var totalChance = 0;
@@ -72,13 +56,13 @@
                     melody,
                     "4n"
                 )
-                this.melodies.push(
-                    melody.map(m => ({
+                var vueMelody = {notes:[]};
+                vueMelody.notes = melody.map(m => ({
                         note: m,
                         isActive: false
-                    })
-                    ));
-                this.allSequences.push(synthPart);
+                    }));
+                this.melodies.push(vueMelody);
+                this.Sequences.push(synthPart);
                 synthPart.start();
 
             },
@@ -86,9 +70,12 @@
                 for (let i = 0; i < melody.length; i++) {
                     for (let m = 0; m < this.melodies.length; m++) {
                         if (this.melodies.length > i) {
-                            if (melody[i] == this.melodies[m][i].note) {
-                                melody[i] = null;
-                                break;
+                            var noteAtTime = this.melodies[m].notes[i];
+                            if (noteAtTime) {
+                                if (melody[i] == noteAtTime.note) {
+                                    melody[i] = null;
+                                    break;
+                                }
                             }
                         }
                     }
@@ -116,7 +103,7 @@
                     sequence.removeAll();
                     sequence.dispose();
                 }
-                this.allMelodies = [];
+                this.melodies = [];
                 this.classes = [];
                 Tone.Transport.clear();
                 Tone.Transport.cancel();

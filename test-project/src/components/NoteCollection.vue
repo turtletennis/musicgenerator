@@ -1,6 +1,6 @@
 <template>
     <div>
-        <td class="note" v-for="note in notes" :key="note"  :class="{ 'highlight': note.isActive }">
+        <td class="note" v-for="(note,index) in notes" :key="`note-${index}`"  :class="{ 'highlight': note.isActive }">
             {{note.note}}
         </td>
     </div>
@@ -14,7 +14,7 @@
             }
         },
         props: {
-            notes: Object
+            notes: Array
         }
     }
 </script>
