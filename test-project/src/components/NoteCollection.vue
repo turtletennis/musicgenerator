@@ -1,6 +1,6 @@
 <template>
     <div>
-        <td class="note" v-for="note in notes"  :class="{ 'highlight': note.isActive }">
+        <td class="note" v-for="note in notes" :key="note"  :class="{ 'highlight': note.isActive }">
             {{note.note}}
         </td>
     </div>
