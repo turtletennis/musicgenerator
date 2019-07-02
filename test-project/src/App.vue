@@ -1,30 +1,44 @@
 <template>
   <div id="app">
-
-    <NoteCollection></NoteCollection>
+      <table>
+          <tr v-for="melody in melodies">
+              <NoteCollection :notes="melody.notes"></NoteCollection>
+          </tr>
+      </table>
 
   </div>
 </template>
 
 <script>
 import HelloWorld from './components/HelloWorld.vue'
-    import SingleNote from './components/SingleNote'
     import NoteCollection from './components/NoteCollection'
 import tone from 'tone'
-import doStuff, { doSomethingElse } from './utils';
-
-doSomethingElse(10);
-
 
 export default {
   name: 'app',
   data: () => {
     return {
-      
+      melodies: [
+                {
+                    notes: [
+                        { note: 'B1', isActive: true },
+                        { note: 'B2' },
+                        { note: 'B3' },
+                        { note: 'B4' },
+                    ]
+                },
+                {
+                    notes: [
+                        { note: 'C1' },
+                        { note: 'D2' },
+                        { note: 'E3' },
+                        { note: 'F4' },
+                    ]
+                }
+            ]
     }
   },
   components: {
-      SingleNote,
       NoteCollection
   }
 }
