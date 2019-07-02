@@ -8,7 +8,8 @@
 
 <script>
 import HelloWorld from './components/HelloWorld.vue'
-import SingleNote from './components/SingleNote'
+    import SingleNote from './components/SingleNote'
+    import NoteCollection from './components/NoteCollection'
 import tone from 'tone'
 import doStuff, { doSomethingElse } from './utils';
 
