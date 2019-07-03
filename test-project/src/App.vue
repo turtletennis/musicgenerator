@@ -71,7 +71,7 @@ window.synth = synth;
                 this.melodies.push(vueMelody);
                 this.sequences.push(synthPart);
                 synthPart.start();
-                Tone.Transport.position="1:1:1";
+                //Tone.Transport.position="1:1:1";
             },
             removeDuplicates: function (melody) {
                 for (let i = 0; i < melody.length; i++) {
@@ -119,7 +119,7 @@ window.synth = synth;
             },
             stop: function () {
                 Tone.Transport.stop();
-                Tone.Transport.position="1:1:1";
+                //Tone.Transport.position="1:1:1";
             }
         }
     }
