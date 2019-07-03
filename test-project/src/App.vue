@@ -5,7 +5,7 @@
         <button v-on:click="stop">stop</button><br>
         <button v-on:click="clear">clear</button><br>
         <table>
-                <NoteCollection v-for="(melody,index) in melodies" :key="`melody-${index}`" :notes="melody.notes" />
+                <NoteCollection v-for="(melody,index) in melodies" :key="`melody-${index}`" :notes="melody.notes" :clearNote="clearNote" :index="index" />
         </table>
 
     </div>
@@ -118,6 +118,9 @@ window.synth = synth;
             stop: function () {
                 Tone.Transport.stop();
                 //Tone.Transport.position="1:1:1";
+            },
+            clearNote: function (note,rowIndex,noteIndex) {
+                alert(note.note + " isActive? " + note.isActive+"\n"+rowIndex+","+noteIndex);
             }
         }
     }

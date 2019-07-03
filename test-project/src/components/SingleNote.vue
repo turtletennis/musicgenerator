@@ -1,5 +1,5 @@
 <template>
-    <td class="note" :class="{ 'highlight': note.isActive }">{{ note.note }}</td>
+    <td class="note" :class="{ 'highlight': note.isActive }" v-on:click="clearNote(note,rowIndex,noteIndex)">{{ note.note }}</td>
 </template>
 
 <script>
@@ -9,7 +9,10 @@ export default {
     }
   },
   props: {
-    note: Object
+      note: Object,
+      clearNote: Function,
+      noteIndex: Object,
+      rowIndex: Object
   }
 }
 </script>

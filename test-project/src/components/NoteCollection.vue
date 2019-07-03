@@ -1,6 +1,6 @@
 <template>
     <tr>
-        <SingleNote v-for="(note,index) in notes" :key="`note-${index}`" :note="note" :class="{ 'highlight': note.isActive }"/>
+        <SingleNote v-for="(note,noteIndex) in notes" :key="`note-${noteIndex}`" :note="note" :clearNote="clearNote" :class="{ 'highlight': note.isActive }" :rowIndex="index" :noteIndex="noteIndex"/>
     </tr>
 </template>
 
@@ -12,7 +12,9 @@
             }
         },
         props: {
-            notes: Array
+            notes: Array,
+            index: Object,
+            clearNote: Function
         },
         components: {
             SingleNote
