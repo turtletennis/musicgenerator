@@ -1,13 +1,11 @@
 <template>
-    <div>
-        <td class="note" v-for="(note,index) in notes" :key="`note-${index}`"  :class="{ 'highlight': note.isActive }">
-            {{note.note}}
-        </td>
-    </div>
+    <tr>
+        <SingleNote v-for="(note,index) in notes" :key="`note-${index}`" :note="note" :class="{ 'highlight': note.isActive }"/>
+    </tr>
 </template>
 
 <script>
-    
+    import SingleNote from './SingleNote'
     export default {
         data: () => {
             return {
@@ -15,6 +13,9 @@
         },
         props: {
             notes: Array
+        },
+        components: {
+            SingleNote
         }
     }
 </script>

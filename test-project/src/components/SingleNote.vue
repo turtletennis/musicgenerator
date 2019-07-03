@@ -1,7 +1,5 @@
 <template>
-
-  <td class="note">{{ note.note }}</td>
-
+    <td class="note" :class="{ 'highlight': note.isActive }">{{ note.note }}</td>
 </template>
 
 <script>

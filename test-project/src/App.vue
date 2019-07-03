@@ -5,9 +5,7 @@
         <button v-on:click="stop">stop</button><br>
         <button v-on:click="clear">clear</button><br>
         <table>
-            <tr v-for="(melody,index) in melodies" :key="`melody-${index}`">
-                <NoteCollection :notes="melody.notes" ></NoteCollection>
-            </tr>
+                <NoteCollection v-for="(melody,index) in melodies" :key="`melody-${index}`" :notes="melody.notes" />
         </table>
 
     </div>
