@@ -11,8 +11,8 @@ export default {
   props: {
       note: Object,
       clearNote: Function,
-      noteIndex: Object,
-      rowIndex: Object
+      noteIndex: Number,
+      rowIndex: Number
   }
 }
 </script>

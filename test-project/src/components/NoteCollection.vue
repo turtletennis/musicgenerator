@@ -13,7 +13,7 @@
         },
         props: {
             notes: Array,
-            index: Object,
+            index: Number,
             clearNote: Function
         },
         components: {
