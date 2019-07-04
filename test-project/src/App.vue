@@ -15,8 +15,6 @@
 <script src="js/tone.js"></script>
 
 <script>
-var synth = new Tone.PolySynth(6, Tone.Synth).toMaster();
-window.synth = synth;
     import NoteCollection from './components/NoteCollection'
     import Tone from 'tone'
     export default {
@@ -36,7 +34,7 @@ window.synth = synth;
         },
         methods: {
             generateMelody: function () {
-                window.synth.connect(new Tone.Reverb(1))
+                this.synth.connect(new Tone.Reverb(1))
                 var total = this.noteChances.reduce(this.sum);
                 var melody = { notes: new Array() };
                 for (let noteIndex = 0; noteIndex < this.restChances.length; noteIndex++) {
@@ -46,7 +44,7 @@ window.synth = synth;
                     while (index < this.noteChances.length) {
                         totalChance += this.noteChances[index];
                         if (totalChance >= rand) {
-                            melody.notes.push(({ note: this.cMinor[index], isActive: false }));
+                            melody.notes.push(({ note: this.cMinor[index], isActive: false, synth: this.synth }));
                             break;
                         }
                         index++;
@@ -58,7 +56,7 @@ window.synth = synth;
                 const synthPart = new Tone.Sequence(
                     function (time, note) {
                         if (note.note) {
-                            window.synth.triggerAttackRelease(note.note, "10hz", time);
+                            note.synth.triggerAttackRelease(note.note, "10hz", time);
                         }
                         note.isActive = true;
                         note.previousNote.isActive = false;
